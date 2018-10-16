@@ -1,0 +1,12 @@
+---
+title: "Midterm project"
+author: "Nathalie Fadel"
+date: "10/16/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
