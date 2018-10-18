@@ -10,3 +10,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 ```
+
+#Import dataset
+```{r}
+exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") 
+
+#Notes - dataset observations:
+#47 weeks in the study, days of week organized alphabetically.
+#1440 "activity" columns, because there are 1440 min/day. 
+#these are the activity "epochs", the signals measured per minute
+
+#Don't include more than 5 figures. 3 is probably optimal.
+
+
+
+
+```
