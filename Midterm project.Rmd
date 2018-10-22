@@ -10,26 +10,35 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 ```
+Notes - dataset observations:
+47 weeks in the study, days of week organized alphabetically.
+1440 "activity" columns, because there are 1440 min/day. 
+These are the activity "epochs", the signals measured per minute
 
-#Import dataset
+Don't include more than 5 figures. 3 is probably optimal.
+
+#Import and clean dataset
 ```{r}
-exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") %>%
-
-#Notes - dataset observations:
-#47 weeks in the study, days of week organized alphabetically.
-#1440 "activity" columns, because there are 1440 min/day. 
-#these are the activity "epochs", the signals measured per minute
-
-#Don't include more than 5 figures. 3 is probably optimal.
-  
-gather(exercise_data, key = minutes, value = activity, activity.1:activity.1440) %>%
+exercise_data <-
+  exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") %>%
+gather(key = minutes, value = activity, activity.1:activity.1440) %>%
   mutate(minutes = str_replace(minutes, "activity.", ""),
          minutes = fct_relevel(minutes, str_c("", c("1-1440")))) %>%
   mutate(minutes = as.numeric(minutes)) %>%
   rename(epochs = activity) %>%
   mutate(day = factor(day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>%
   arrange(week, day, minutes)
+  
+exercise_data = exercise_data %>%
+  group_by(week, day) %>%
+  mutate(total_exercise = sum(epochs))
 
+exercise_data %>% group_by(week) %>% summarize(mean(total_exercise)) #mean amount of total activity per day
 
+```
+This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
+
+Discuss any additional exploratory analyses you conduct, but only include results you think are interesting (e.g. visually inspect distributions for outliers, but include only if these are informative).
+```{r}
 
 ```
