@@ -13,7 +13,7 @@ library(tidyverse)
 
 #Import dataset
 ```{r}
-exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") 
+exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") %>%
 
 #Notes - dataset observations:
 #47 weeks in the study, days of week organized alphabetically.
@@ -21,7 +21,14 @@ exercise_data = read_csv(file = "./data/p8105_mtp_data.csv")
 #these are the activity "epochs", the signals measured per minute
 
 #Don't include more than 5 figures. 3 is probably optimal.
-
+  
+gather(exercise_data, key = minutes, value = activity, activity.1:activity.1440) %>%
+  mutate(minutes = str_replace(minutes, "activity.", ""),
+         minutes = fct_relevel(minutes, str_c("", c("1-1440")))) %>%
+  mutate(minutes = as.numeric(minutes)) %>%
+  rename(epochs = activity) %>%
+  mutate(day = factor(day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>%
+  arrange(week, day, minutes)
 
 
 
