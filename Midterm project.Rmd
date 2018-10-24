@@ -35,16 +35,21 @@ exercise_data %>% group_by(week) %>% summarize(mean(total_exercise)) #mean amoun
 
 exercise_data %>% 
   group_by(week) %>% 
-  summarize(avg_total_exercise = mean(total_exercise)) %>%
+  summarize(avg_total_exercise = mean(total_exercise) / 1000) %>%
   ggplot(aes(x = week, y = avg_total_exercise)) +
-  geom_line() +
-  labs(y = "average amount of activity", x = "week number")
-#scale of y axis is CRAZY, need to scale back by a factor of like, 10^3.
+  geom_line(color = "blue") +
+  labs(y = "average amount of activity *(1/1000)", x = "week number")
+
+
 
 ```
+The road to improvement is not linear, my friends. But doesn't it matter more that you're better off in the end than when you started? Doesn't the saying go, "the glory doesn't come from never falling, but in rising every time we fall", or something? Our friend here is living that motto. Tbh tho, props. Not easy to face a chronic illness like that and take actual, measurable action and hold yourself accountable. 
+
+But what I want to know is this. Is the mean total at week 1 significantly different from the mean total at week 47, given the variability of the data?
+
 This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
 
-Discuss any additional exploratory analyses you conduct, but only include results you think are interesting (e.g. visually inspect distributions for outliers, but include only if these are informative).
+(Discuss any additional exploratory analyses you conduct, but only include results you think are interesting (e.g. visually inspect distributions for outliers, but include only if these are informative).)
 ```{r}
 
 ```
