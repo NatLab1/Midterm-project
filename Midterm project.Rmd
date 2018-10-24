@@ -8,12 +8,6 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Notes - dataset observations:
-47 weeks in the study, days of week organized alphabetically.
-1440 "activity" columns, because there are 1440 min/day. 
-These are the activity "epochs", the signals measured per minute
-
-Don't include more than 5 figures. 3 is probably optimal.
 
 #Import and clean dataset
 ```{r}
@@ -31,8 +25,14 @@ exercise_data = exercise_data %>%
   group_by(week, day) %>%
   mutate(total_exercise = sum(epochs))
 
-exercise_data %>% group_by(week) %>% summarize(mean(total_exercise)) #mean amount of total daily activity for each week
+exercise_data %>% group_by(week) %>% summarize(mean(total_exercise) / 1000) #mean amount of total daily activity for each week / 1000
 
+exercise_data %>% group_by(week) %>% summarize(sd(total_exercise) / 1000)
+
+#week 1 mean: 297.190714, sd: 141.4433647 (155.7473, 438.6341)
+#week 7 mean: 390.937571, sd: 79.4805454 (311.457, 470.4181)
+#Make a table comparing these two and the error bar range
+  
 exercise_data %>% 
   group_by(week) %>% 
   summarize(avg_total_exercise = mean(total_exercise) / 1000) %>%
@@ -40,16 +40,14 @@ exercise_data %>%
   geom_line(color = "blue") +
   labs(y = "average amount of activity *(1/1000)", x = "week number")
 
-
-
 ```
-The road to improvement is not linear, my friends. But doesn't it matter more that you're better off in the end than when you started? Doesn't the saying go, "the glory doesn't come from never falling, but in rising every time we fall", or something? Our friend here is living that motto. Tbh tho, props. Not easy to face a chronic illness like that and take actual, measurable action and hold yourself accountable. 
-
-But what I want to know is this. Is the mean total at week 1 significantly different from the mean total at week 47, given the variability of the data?
+From the mean and standard deviation comparison, we can see that the average total activity between week 1 and week 47 is closer than perhaps one would expect. However, we see from the line graph that the variability decreases over time, meaning that on average, he becomes more consistent with his activity level, even if the average totals between week 1 and week 47 are not significantly different from one another. Also, week 3 is an outlier, as it is substantially lower than the average total from any of the other weeks. 
 
 This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
 
-(Discuss any additional exploratory analyses you conduct, but only include results you think are interesting (e.g. visually inspect distributions for outliers, but include only if these are informative).)
+Additionally, examine the possibility that day of the week affects activity (in isolation and in addition to the effect of time).
+
+One advantage of accelerometer data is the ability to inspect activity over the course of the day, rather than aggregating over 24 hours. Explore the distribution of activity counts in the full dataset, taking into account other variables of interest. Make a visualization that shows the 24-hour activity “profiles” for each day. Also visualize effects of time and day of the week on 24-hour activity profiles; incorporating smooth estimates of mean activity profiles may clarify these effects. Comment on relationships you think are interesting. 
 ```{r}
 
 ```
