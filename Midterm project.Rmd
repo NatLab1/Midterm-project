@@ -7,8 +7,6 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-library(tidyverse)
 ```
 Notes - dataset observations:
 47 weeks in the study, days of week organized alphabetically.
@@ -33,7 +31,15 @@ exercise_data = exercise_data %>%
   group_by(week, day) %>%
   mutate(total_exercise = sum(epochs))
 
-exercise_data %>% group_by(week) %>% summarize(mean(total_exercise)) #mean amount of total activity per day
+exercise_data %>% group_by(week) %>% summarize(mean(total_exercise)) #mean amount of total daily activity for each week
+
+exercise_data %>% 
+  group_by(week) %>% 
+  summarize(avg_total_exercise = mean(total_exercise)) %>%
+  ggplot(aes(x = week, y = avg_total_exercise)) +
+  geom_line() +
+  labs(y = "average amount of activity", x = "week number")
+#scale of y axis is CRAZY, need to scale back by a factor of like, 10^3.
 
 ```
 This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
