@@ -24,7 +24,10 @@ gather(key = minutes, value = activity, activity.1:activity.1440) %>%
 exercise_data = exercise_data %>%
   group_by(week, day) %>%
   mutate(total_exercise = sum(epochs))
+```
+This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
 
+```{r}
 exercise_data %>% group_by(week) %>% summarize(mean(total_exercise) / 1000) #mean amount of total daily activity for each week / 1000
 
 exercise_data %>% group_by(week) %>% summarize(sd(total_exercise) / 1000)
@@ -43,11 +46,31 @@ exercise_data %>%
 ```
 From the mean and standard deviation comparison, we can see that the average total activity between week 1 and week 47 is closer than perhaps one would expect. However, we see from the line graph that the variability decreases over time, meaning that on average, he becomes more consistent with his activity level, even if the average totals between week 1 and week 47 are not significantly different from one another. Also, week 3 is an outlier, as it is substantially lower than the average total from any of the other weeks. 
 
-This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
-
-Additionally, examine the possibility that day of the week affects activity (in isolation and in addition to the effect of time).
-
-One advantage of accelerometer data is the ability to inspect activity over the course of the day, rather than aggregating over 24 hours. Explore the distribution of activity counts in the full dataset, taking into account other variables of interest. Make a visualization that shows the 24-hour activity “profiles” for each day. Also visualize effects of time and day of the week on 24-hour activity profiles; incorporating smooth estimates of mean activity profiles may clarify these effects. Comment on relationships you think are interesting. 
 ```{r}
+exercise_data %>%
+  group_by(week, day) %>%
+  summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
+  ggplot(aes(x = week, y = mean_total_exercise)) +
+  geom_line(color = "blue") +
+  facet_grid(~day)
+#line plots of avg total daily activity over 47 weeks categorized by day of week
+
+exercise_data %>%
+  group_by(day) %>%
+  summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
+  ggplot(aes(x = day, y = mean_total_exercise)) +
+  geom_col()
+#bar chart of avg total daily activity over course of entire 47-week period, categorized by day of week
+
+exercise_data %>%
+  group_by(week, day) %>%
+  summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
+  ggplot(aes(x = week, y = mean_total_exercise)) +
+  geom_line(aes(color = day))
+#line plot of mean total daily activity over entire 47-week period, days color-coded and overlaid
 
 ```
+Observable trends: Weekends have more variability than weekdays, with Saturday experiencing the highest variability and Wednesday/Thursday having the lowest. At early observations, variability for all days is high, but weekend days still experience the highest variability in the last several weeks.
+
+One advantage of accelerometer data is the ability to inspect activity over the course of the day, rather than aggregating over 24 hours. Explore the distribution of activity counts in the full dataset, taking into account other variables of interest. Make a visualization that shows the 24-hour activity “profiles” for each day. Also visualize effects of time and day of the week on 24-hour activity profiles; incorporating smooth estimates of mean activity profiles may clarify these effects. Comment on relationships you think are interesting. 
+
