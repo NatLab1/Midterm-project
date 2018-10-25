@@ -7,13 +7,16 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
 #Import and clean dataset
 ```{r}
-exercise_data <-
-  exercise_data = read_csv(file = "./data/p8105_mtp_data.csv") %>%
-gather(key = minutes, value = activity, activity.1:activity.1440) %>%
+exercise_data = read_csv(file = "./data/p8105_mtp_data.csv")
+
+exercise_data = 
+  exercise_data %>%
+  gather(key = minutes, value = activity, activity.1:activity.1440) %>%
   mutate(minutes = str_replace(minutes, "activity.", ""),
          minutes = fct_relevel(minutes, str_c("", c("1-1440")))) %>%
   mutate(minutes = as.numeric(minutes)) %>%
@@ -24,27 +27,23 @@ gather(key = minutes, value = activity, activity.1:activity.1440) %>%
 exercise_data = exercise_data %>%
   group_by(week, day) %>%
   mutate(total_exercise = sum(epochs))
+
+exercise_data %>% arrange(desc(total_exercise))
+exercise_data %>% arrange(total_exercise)
 ```
-This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute per day that the epochs were recorded. 
+This dataset has `r nrow(exercise_data)` observations and `r ncol(exercise_data)` variables. The "epochs" variable is the numer of electric signals recorded per minute of the day, and the "minutes" variable is the minute of the day that the epochs were recorded. The "week" variable is the week number (1-47) that the subject wore the device. The "total exercise" variable is the total amount of signals recorded per day.
+The maximum total exercise is 805355, which occurred on the Saturday of week 37. The minimum total exercise is 1440, which occurred on the Saturday of week 1. The mean total exercise recorded in week 1 and week 47 (the last week) is `r exercise_data %>% filter(week == 1) %>% group_by(week) %>% summarize(mean(total_exercise))` and `r exercise_data %>% filter(week == 47) %>% group_by(week) %>% summarize(mean(total_exercise))`, respectively.
 
 ```{r}
-exercise_data %>% group_by(week) %>% summarize(mean(total_exercise) / 1000) #mean amount of total daily activity for each week / 1000
-
-exercise_data %>% group_by(week) %>% summarize(sd(total_exercise) / 1000)
-
-#week 1 mean: 297.190714, sd: 141.4433647 (155.7473, 438.6341)
-#week 7 mean: 390.937571, sd: 79.4805454 (311.457, 470.4181)
-#Make a table comparing these two and the error bar range
-  
 exercise_data %>% 
   group_by(week) %>% 
-  summarize(avg_total_exercise = mean(total_exercise) / 1000) %>%
+  summarize(avg_total_exercise = mean(total_exercise)) %>%
   ggplot(aes(x = week, y = avg_total_exercise)) +
   geom_line(color = "blue") +
-  labs(y = "average amount of activity *(1/1000)", x = "week number")
+  labs(y = "average amount of activity", x = "week number")
 
 ```
-From the mean and standard deviation comparison, we can see that the average total activity between week 1 and week 47 is closer than perhaps one would expect. However, we see from the line graph that the variability decreases over time, meaning that on average, he becomes more consistent with his activity level, even if the average totals between week 1 and week 47 are not significantly different from one another. Also, week 3 is an outlier, as it is substantially lower than the average total from any of the other weeks. 
+From the mean comparison, we can see that the average total activity between week 1 and week 47 is closer than perhaps one would expect. However, we see from the line graph that the variability decreases over time, meaning that on average, he becomes more consistent with his activity level, even if the average totals between week 1 and week 47 are not significantly different from one another. Also, week 3 is an outlier, as it is substantially lower than the average total from any of the other weeks.
 
 ```{r}
 exercise_data %>%
@@ -66,7 +65,7 @@ exercise_data %>%
 #line plot of mean total daily activity over entire 47-week period, days color-coded and overlaid - kind of messy and hard to read?
 
 ```
-Observable trends: Weekends have more variability than weekdays, with Saturday experiencing the highest variability and Wednesday/Thursday having the lowest. At early observations, variability for all days is high, but weekend days still experience the highest variability in the last several weeks.
+Per the line graphs above, weekends have more variability than weekdays, with Saturday experiencing the highest variability and Wednesday/Thursday having the lowest. At early observations, variability for all days is high, but weekend days still experience the highest variability out of the week, even towards the end of the study period.
 
 One advantage of accelerometer data is the ability to inspect activity over the course of the day, rather than aggregating over 24 hours. Explore the distribution of activity counts in the full dataset, taking into account other variables of interest. Make a visualization that shows the 24-hour activity “profiles” for each day. Also visualize effects of time and day of the week on 24-hour activity profiles; incorporating smooth estimates of mean activity profiles may clarify these effects. Comment on relationships you think are interesting. 
 
