@@ -58,22 +58,44 @@ exercise_data %>%
 #line plots of avg total daily activity over 47 weeks categorized by day of week
 
 exercise_data %>%
-  group_by(day) %>%
-  summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
-  ggplot(aes(x = day, y = mean_total_exercise)) +
-  geom_col()
-#bar chart of avg total daily activity over course of entire 47-week period, categorized by day of week - this looks like crap don't include this in your report
-
-exercise_data %>%
   group_by(week, day) %>%
   summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
   ggplot(aes(x = week, y = mean_total_exercise)) +
   geom_line(aes(color = day)) +
   viridis::scale_color_viridis(name = "day", discrete = TRUE, option = "plasma")
-#line plot of mean total daily activity over entire 47-week period, days color-coded and overlaid
+#line plot of mean total daily activity over entire 47-week period, days color-coded and overlaid - kind of messy and hard to read?
 
 ```
 Observable trends: Weekends have more variability than weekdays, with Saturday experiencing the highest variability and Wednesday/Thursday having the lowest. At early observations, variability for all days is high, but weekend days still experience the highest variability in the last several weeks.
 
 One advantage of accelerometer data is the ability to inspect activity over the course of the day, rather than aggregating over 24 hours. Explore the distribution of activity counts in the full dataset, taking into account other variables of interest. Make a visualization that shows the 24-hour activity “profiles” for each day. Also visualize effects of time and day of the week on 24-hour activity profiles; incorporating smooth estimates of mean activity profiles may clarify these effects. Comment on relationships you think are interesting. 
 
+```{r}
+exercise_data %>%
+  filter(day == "Sunday") %>%
+  group_by(week) %>%
+  ggplot(aes(x = minutes, y = epochs)) +
+  geom_point(aes(color = week)) +
+  viridis::scale_color_viridis(name = "week", option = "plasma") +
+  theme(legend.position = "bottom")
+
+
+
+exercise_data %>%
+  group_by(day, week) %>%
+  ggplot(aes(x = minutes, y = epochs)) +
+  geom_point(aes(color = week)) +
+  viridis::scale_color_viridis(name = "week", option = "plasma") +
+  theme(legend.position = "bottom") +
+  facet_grid(~day)
+#this one looks too crowded. Maybe a better option is to knit multiple graphs in one panel?
+
+
+
+
+
+
+
+
+
+```
