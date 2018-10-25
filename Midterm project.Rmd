@@ -51,7 +51,9 @@ exercise_data %>%
   group_by(week, day) %>%
   summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
   ggplot(aes(x = week, y = mean_total_exercise)) +
-  geom_line(color = "blue") +
+  geom_line(aes(color = day)) +
+  viridis::scale_color_viridis(name = "day", discrete = TRUE, option = "plasma") +
+  theme(legend.position = "bottom") +
   facet_grid(~day)
 #line plots of avg total daily activity over 47 weeks categorized by day of week
 
@@ -60,13 +62,14 @@ exercise_data %>%
   summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
   ggplot(aes(x = day, y = mean_total_exercise)) +
   geom_col()
-#bar chart of avg total daily activity over course of entire 47-week period, categorized by day of week
+#bar chart of avg total daily activity over course of entire 47-week period, categorized by day of week - this looks like crap don't include this in your report
 
 exercise_data %>%
   group_by(week, day) %>%
   summarize(mean_total_exercise = mean(total_exercise) / 1000) %>%
   ggplot(aes(x = week, y = mean_total_exercise)) +
-  geom_line(aes(color = day))
+  geom_line(aes(color = day)) +
+  viridis::scale_color_viridis(name = "day", discrete = TRUE, option = "plasma")
 #line plot of mean total daily activity over entire 47-week period, days color-coded and overlaid
 
 ```
